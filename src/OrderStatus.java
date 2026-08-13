@@ -1,2 +1,4 @@
-public class OrderStatus {
+public enum OrderStatus {
+    WAITING_PAYMENT,
+    PAID
 }
