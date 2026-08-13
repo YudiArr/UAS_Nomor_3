@@ -1,0 +1,115 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title Use Case Diagram - Fresh Harvest Organics (FHO)
+
+actor Customer
+actor Admin
+actor "Payment Gateway" as PG
+actor "Gojek API" as Gojek
+actor "Kurir Toko" as Kurir
+
+rectangle "Sistem Fresh Harvest Organics (FHO)" {
+
+    usecase "Registrasi / Login\nCustomer" as UCLoginCustomer
+    usecase "Login Admin" as UCLoginAdmin
+
+    usecase "Melihat Katalog\nProduk" as UCKatalog
+    usecase "Mencari Produk" as UCCariProduk
+    usecase "Melihat Detail Produk" as UCDetailProduk
+
+    usecase "Menambahkan Produk\nke Keranjang" as UCTambahCart
+    usecase "Melihat Keranjang" as UCLihatCart
+    usecase "Mengubah Jumlah Produk\npada Keranjang" as UCUbahCart
+    usecase "Menghapus Produk\ndari Keranjang" as UCHapusCart
+
+    usecase "Melihat Resep\nMasakan" as UCResep
+    usecase "Memilih Resep" as UCPilihResep
+    usecase "Membeli Bahan\nDari Resep" as UCBeliResep
+
+    usecase "Checkout Pesanan" as UCCheckout
+    usecase "Memasukkan Alamat\nPengiriman" as UCAlamat
+    usecase "Validasi Jarak\nMaksimal 25 Km" as UCValidasiJarak
+    usecase "Memilih Layanan\nPengiriman" as UCPilihDelivery
+    usecase "Instant Delivery\n(Maksimal 1 Jam)" as UCInstant
+    usecase "Next Day Delivery\n(Ongkir Flat Rp20.000)" as UCNextDay
+    usecase "Menghitung Ongkir" as UCHitungOngkir
+
+    usecase "Memilih Metode\nPembayaran" as UCPilihPayment
+    usecase "Memproses Pembayaran" as UCPayment
+    usecase "Membuat Pesanan" as UCBuatOrder
+    usecase "Melihat Status\nPesanan" as UCStatusOrder
+    usecase "Melihat Riwayat\nPesanan" as UCRiwayat
+
+    usecase "Mengelola Produk" as UCKelolaProduk
+    usecase "Menambah Produk" as UCTambahProduk
+    usecase "Mengubah Data Produk" as UCUbahProduk
+    usecase "Menghapus Produk" as UCHapusProduk
+    usecase "Mengelola Stok Produk" as UCKelolaStok
+    usecase "Melihat Pesanan\nCustomer" as UCLihatOrder
+    usecase "Memperbarui Status\nPesanan" as UCUbahStatus
+}
+
+' Hubungan Customer
+Customer --> UCLoginCustomer
+Customer --> UCKatalog
+Customer --> UCCariProduk
+Customer --> UCDetailProduk
+Customer --> UCTambahCart
+Customer --> UCLihatCart
+Customer --> UCUbahCart
+Customer --> UCHapusCart
+Customer --> UCResep
+Customer --> UCPilihResep
+Customer --> UCBeliResep
+Customer --> UCCheckout
+Customer --> UCStatusOrder
+Customer --> UCRiwayat
+
+' Hubungan Admin
+Admin --> UCLoginAdmin
+Admin --> UCKelolaProduk
+Admin --> UCKelolaStok
+Admin --> UCLihatOrder
+Admin --> UCUbahStatus
+
+' Hubungan eksternal
+PG --> UCPayment
+Gojek --> UCValidasiJarak
+Gojek --> UCHitungOngkir
+Kurir --> UCNextDay
+Kurir --> UCUbahStatus
+
+' Include dan Extend
+UCCariProduk .> UCKatalog : <<extend>>
+UCDetailProduk .> UCKatalog : <<extend>>
+
+UCTambahCart .> UCDetailProduk : <<extend>>
+UCUbahCart .> UCLihatCart : <<extend>>
+UCHapusCart .> UCLihatCart : <<extend>>
+
+UCPilihResep .> UCResep : <<extend>>
+UCBeliResep .> UCPilihResep : <<include>>
+UCBeliResep .> UCTambahCart : <<include>>
+
+UCCheckout .> UCLihatCart : <<include>>
+UCCheckout .> UCAlamat : <<include>>
+UCCheckout .> UCValidasiJarak : <<include>>
+UCCheckout .> UCPilihDelivery : <<include>>
+UCCheckout .> UCPilihPayment : <<include>>
+UCCheckout .> UCPayment : <<include>>
+UCCheckout .> UCBuatOrder : <<include>>
+
+UCInstant .> UCPilihDelivery : <<extend>>
+UCNextDay .> UCPilihDelivery : <<extend>>
+
+UCInstant .> UCHitungOngkir : <<include>>
+UCNextDay .> UCHitungOngkir : <<include>>
+
+UCKelolaProduk .> UCTambahProduk : <<include>>
+UCKelolaProduk .> UCUbahProduk : <<include>>
+UCKelolaProduk .> UCHapusProduk : <<include>>
+
+@enduml

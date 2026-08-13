@@ -1,0 +1,43 @@
+@startuml
+title Activity Diagram - Admin Menambah Produk Baru FHO
+
+start
+
+:Admin membuka aplikasi FHO;
+
+:Admin memilih menu Login Admin;
+
+:Admin memasukkan kode admin;
+
+if (Kode admin valid?) then (Ya)
+    :Sistem menampilkan menu admin;
+else (Tidak)
+    :Sistem menampilkan pesan\n"Kode admin salah";
+    stop
+endif
+
+:Admin memilih menu\n"Tambah Produk";
+
+:Admin memasukkan kode produk;
+
+if (Kode produk sudah digunakan?) then (Ya)
+    :Sistem menampilkan pesan\n"Kode produk sudah ada";
+    :Admin memasukkan kode produk kembali;
+else (Tidak)
+    :Admin memasukkan nama produk;
+    :Admin memilih kategori produk;
+    :Admin memasukkan harga produk;
+    :Admin memasukkan jumlah stok;
+    :Admin memasukkan satuan produk;
+endif
+
+if (Data produk valid?) then (Ya)
+    :Sistem membuat object produk\nsesuai kategorinya;
+    :Sistem menyimpan produk\nke katalog FHO;
+    :Sistem menampilkan pesan\n"Produk berhasil ditambahkan";
+else (Tidak)
+    :Sistem menampilkan pesan\n"Data produk tidak valid";
+endif
+
+stop
+@enduml

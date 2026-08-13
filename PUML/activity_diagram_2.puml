@@ -1,0 +1,35 @@
+@startuml
+title Activity Diagram - Membeli Bahan dari Resep FHO
+
+start
+
+:Customer membuka menu resep;
+
+:Sistem menampilkan daftar resep;
+
+:Customer memilih salah satu resep;
+
+:Sistem menampilkan detail resep,\nlangkah memasak, dan daftar bahan;
+
+:Customer memilih tombol\n"Beli Semua Bahan";
+
+repeat
+    :Sistem mengambil satu bahan\npada daftar resep;
+
+    :Sistem mencari produk\nyang sesuai di katalog;
+
+    if (Produk tersedia dan stok cukup?) then (Ya)
+        :Sistem menambahkan produk\nke keranjang customer;
+        :Sistem menampilkan informasi\n"Bahan berhasil ditambahkan";
+    else (Tidak)
+        :Sistem menampilkan informasi\n"Bahan tidak tersedia / stok kurang";
+    endif
+
+repeat while (Masih ada bahan resep?) is (Ya)
+
+:Sistem menampilkan isi keranjang;
+
+:Customer memilih lanjut belanja\natau checkout;
+
+stop
+@enduml

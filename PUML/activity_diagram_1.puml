@@ -1,0 +1,58 @@
+@startuml
+title Activity Diagram - Checkout dan Pembayaran Pesanan FHO
+
+start
+
+:Customer membuka keranjang belanja;
+
+if (Keranjang kosong?) then (Ya)
+    :Sistem menampilkan pesan\n"Keranjang masih kosong";
+    stop
+else (Tidak)
+    :Sistem menampilkan isi keranjang\ndan total harga produk;
+endif
+
+:Customer memilih menu Checkout;
+
+:Customer memasukkan atau\nmengonfirmasi alamat pengiriman;
+
+:Customer memasukkan jarak\ndari toko FHO;
+
+if (Jarak lebih dari 25 km?) then (Ya)
+    :Sistem menampilkan pesan\n"Layanan hanya maksimal 25 km";
+    stop
+else (Tidak)
+    :Sistem memvalidasi jarak;
+endif
+
+:Customer memilih layanan pengiriman;
+
+if (Memilih Instant Delivery?) then (Ya)
+    :Sistem mengirim data jarak\nke Gojek API;
+    :Gojek API menghitung\nongkos kirim berdasarkan jarak;
+    :Sistem menampilkan estimasi\nmaksimal 1 jam;
+else (Next Day Delivery)
+    :Sistem menetapkan ongkir flat\nRp20.000;
+    :Sistem menampilkan estimasi\npengiriman besok;
+endif
+
+:Sistem menghitung total pembayaran\n(total produk + ongkos kirim);
+
+:Customer memilih metode pembayaran;
+
+:Sistem mengirim data pembayaran\nke Payment Gateway;
+
+if (Pembayaran berhasil?) then (Ya)
+    :Sistem mengurangi stok produk;
+    :Sistem membuat data pesanan;
+    :Sistem membuat nomor pesanan;
+    :Sistem mengubah status pesanan\nmenjadi DIBAYAR;
+    :Sistem mengosongkan keranjang;
+    :Sistem menampilkan notifikasi\n"Pesanan berhasil dibuat";
+else (Tidak)
+    :Sistem menampilkan notifikasi\n"Pembayaran gagal";
+    :Customer memilih metode\npembayaran kembali;
+endif
+
+stop
+@enduml

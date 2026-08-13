@@ -1,0 +1,303 @@
+@startuml
+title Class Diagram - Fresh Harvest Organics (FHO)
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+
+' =====================================================
+' MAIN PROGRAM
+' =====================================================
+
+class AppFresh {
+  - input : Scanner
+  - store : Store
+  + main(args : String[]) : void
+  + showMainMenu() : void
+  + customerMenu(customer : Customer) : void
+  + adminMenu(admin : Admin) : void
+  + checkout(customer : Customer) : void
+}
+
+' =====================================================
+' USER
+' =====================================================
+
+abstract class User {
+  - name : String
+  - email : String
+  - password : String
+  + User(name : String, email : String, password : String)
+  + getName() : String
+  + setName(name : String) : void
+  + getEmail() : String
+  + setEmail(email : String) : void
+  + login() : boolean
+  + getRole() : String
+  + showProfile() : void
+}
+
+class Customer {
+  - customerId : String
+  - address : String
+  - phoneNumber : String
+  - cart : Cart
+  + Customer(...)
+  + getAddress() : String
+  + setAddress(address : String) : void
+  + getCart() : Cart
+  + getRole() : String
+  + showProfile() : void
+}
+
+class Admin {
+  - adminCode : String
+  + Admin(...)
+  + getAdminCode() : String
+  + getRole() : String
+  + showProfile() : void
+}
+
+User <|-- Customer
+User <|-- Admin
+
+' =====================================================
+' PRODUCT
+' =====================================================
+
+abstract class Product {
+  - code : String
+  - name : String
+  - price : double
+  - stock : int
+  - unit : String
+  + Product(...)
+  + getCode() : String
+  + getName() : String
+  + getPrice() : double
+  + getStock() : int
+  + getUnit() : String
+  + setPrice(price : double) : void
+  + setStock(stock : int) : void
+  + addStock(amount : int) : void
+  + reduceStock(amount : int) : boolean
+  + getCategory() : String
+  + displayProduct() : void
+}
+
+class Vegetable {
+  + Vegetable(...)
+  + getCategory() : String
+}
+
+class Fruit {
+  + Fruit(...)
+  + getCategory() : String
+}
+
+class Meat {
+  + Meat(...)
+  + getCategory() : String
+}
+
+class NaturalIngredient {
+  + NaturalIngredient(...)
+  + getCategory() : String
+}
+
+Product <|-- Vegetable
+Product <|-- Fruit
+Product <|-- Meat
+Product <|-- NaturalIngredient
+
+' =====================================================
+' DELIVERY
+' =====================================================
+
+interface Delivery {
+  + calculateDeliveryFee(distance : double) : double
+  + getServiceName() : String
+  + getEstimatedTime() : String
+}
+
+class InstantDelivery {
+  - baseFee : double
+  - feePerKm : double
+  + calculateDeliveryFee(distance : double) : double
+  + getServiceName() : String
+  + getEstimatedTime() : String
+}
+
+class NextDayDelivery {
+  - flatFee : double
+  + calculateDeliveryFee(distance : double) : double
+  + getServiceName() : String
+  + getEstimatedTime() : String
+}
+
+Delivery <|.. InstantDelivery
+Delivery <|.. NextDayDelivery
+
+' =====================================================
+' PAYMENT
+' =====================================================
+
+interface PaymentMethod {
+  + processPayment(amount : double) : boolean
+  + getPaymentName() : String
+}
+
+class EWalletPayment {
+  - provider : String
+  + processPayment(amount : double) : boolean
+  + getPaymentName() : String
+}
+
+class VirtualAccountPayment {
+  - bankName : String
+  + processPayment(amount : double) : boolean
+  + getPaymentName() : String
+}
+
+class CreditCardPayment {
+  - cardNumber : String
+  + processPayment(amount : double) : boolean
+  + getPaymentName() : String
+}
+
+PaymentMethod <|.. EWalletPayment
+PaymentMethod <|.. VirtualAccountPayment
+PaymentMethod <|.. CreditCardPayment
+
+' =====================================================
+' CART, ORDER, RECIPE, STORE
+' =====================================================
+
+class Cart {
+  - items : Map<Product, Integer>
+  + addItem(product : Product, quantity : int) : void
+  + removeItem(product : Product) : void
+  + updateQuantity(product : Product, quantity : int) : void
+  + getItems() : Map<Product, Integer>
+  + calculateSubtotal() : double
+  + isEmpty() : boolean
+  + clearCart() : void
+  + displayCart() : void
+}
+
+class Order {
+  - orderNumber : String
+  - orderDate : String
+  - totalProduct : double
+  - deliveryFee : double
+  - totalPayment : double
+  - status : OrderStatus
+  - customer : Customer
+  - delivery : Delivery
+  - paymentMethod : PaymentMethod
+  + Order(...)
+  + calculateTotal() : double
+  + processPayment() : boolean
+  + updateStatus(status : OrderStatus) : void
+  + displayOrderDetail() : void
+}
+
+enum OrderStatus {
+  MENUNGGU_PEMBAYARAN
+  DIBAYAR
+  DIPROSES
+  DIKIRIM
+  SELESAI
+  DIBATALKAN
+}
+
+class Recipe {
+  - recipeName : String
+  - description : String
+  - cookingSteps : String
+  - ingredients : List<Product>
+  + Recipe(...)
+  + getRecipeName() : String
+  + getIngredients() : List<Product>
+  + displayRecipe() : void
+  + addIngredientsToCart(cart : Cart) : void
+}
+
+class Store {
+  - storeName : String
+  - products : List<Product>
+  - recipes : List<Recipe>
+  - orders : List<Order>
+  + addProduct(product : Product) : void
+  + updateProductStock(code : String, quantity : int) : void
+  + findProductByCode(code : String) : Product
+  + findProductByName(name : String) : Product
+  + getProducts() : List<Product>
+  + addRecipe(recipe : Recipe) : void
+  + getRecipes() : List<Recipe>
+  + addOrder(order : Order) : void
+  + getOrders() : List<Order>
+  + displayCatalog() : void
+}
+
+' =====================================================
+' RELATIONSHIP ANTAR CLASS
+' =====================================================
+
+Customer "1" *-- "1" Cart : memiliki
+Cart "1" o-- "*" Product : berisi
+
+Customer "1" --> "*" Order : membuat
+Order "1" --> "1" Customer : pemesan
+Order "1" --> "1" Cart : data belanja
+Order "1" --> "1" Delivery : pengiriman
+Order "1" --> "1" PaymentMethod : pembayaran
+Order --> OrderStatus : status
+
+Recipe "1" o-- "*" Product : bahan resep
+Recipe ..> Cart : menambahkan bahan
+
+Store "1" o-- "*" Product : katalog
+Store "1" o-- "*" Recipe : daftar resep
+Store "1" o-- "*" Order : daftar pesanan
+
+Admin ..> Store : mengelola
+Customer ..> Store : melihat katalog
+AppFresh --> Store : menggunakan
+AppFresh --> Customer : mengelola menu
+AppFresh --> Admin : mengelola menu
+AppFresh --> Delivery : memilih layanan
+AppFresh --> PaymentMethod : memilih metode
+
+note right of User
+  Abstract Class
+  Menjadi induk Customer dan Admin
+end note
+
+note right of Product
+  Abstract Class
+  Menjadi induk seluruh kategori produk
+end note
+
+note right of Delivery
+  Interface
+  Digunakan oleh InstantDelivery
+  dan NextDayDelivery
+end note
+
+note right of PaymentMethod
+  Interface
+  Digunakan oleh tiga metode pembayaran
+end note
+
+note bottom of Order
+  Polymorphism:
+  Delivery dapat berisi InstantDelivery
+  atau NextDayDelivery.
+
+  PaymentMethod dapat berisi:
+  EWalletPayment, VirtualAccountPayment,
+  atau CreditCardPayment.
+end note
+
+@enduml
