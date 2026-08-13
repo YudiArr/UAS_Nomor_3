@@ -8,3 +8,24 @@ Berdasarkan studi kasus Fresh Harvest Organics (FHO) di atas, buatlah program ap
 
 Catatan: Khusus untuk bagian pembayaran, tidak perlu integrasi nyata dengan Payment Gateway atau third party, cukup diasumsikan sukses setelah memilih.
 
+AppFresh.java
+User.java
+Customer.java
+Admin.java
+Product.java
+Vegetable.java
+Fruit.java
+Meat.java
+NaturalIngredient.java
+Delivery.java
+InstantDelivery.java
+NextDayDelivery.java
+PaymentMethod.java
+EWalletPayment.java
+VirtualAccountPayment.java
+CreditCardPayment.java
+Cart.java
+Order.java
+OrderStatus.java
+Recipe.java
+Store.java
